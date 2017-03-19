@@ -1,5 +1,7 @@
+**Note**: this repo is forked from "osh/KerasGAN".
+
 # KerasGAN
-This module includes a GAN implementation in Keras for the MNIST data set
+This module includes a GAN implementation in Keras for the GooglePlus "In Your Circles" data set
 See full article @ https://oshearesearch.com/index.php/2016/07/01/mnist-generative-adversarial-model-in-keras/
 
 # GAN Overview

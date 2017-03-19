@@ -94,14 +94,15 @@ def gan(nch, shp, dropout_rate=0.25):
     GAN.summary()
     return generator, discriminator, GAN
 
-def plot_loss(losses):
+def plot_loss(losses,time_now="0"):
     display.clear_output(wait=True)
     display.display(plt.gcf())
     plt.figure(figsize=(10,8))
     plt.plot(losses["d"], label='discriminitive loss')
     plt.plot(losses["g"], label='generative loss')
     plt.legend()
-    plt.show()
+    #plt.show()
+    plt.savefig("loss_plot_%s.png"%time_now)
     
 def plot_gen(generator, n_ex=16,dim=(4,4), figsize=(10,10) ):
     noise = np.random.uniform(0,1,size=[n_ex,100])
@@ -178,17 +179,19 @@ def evaluate_generator(generator):
             
 def evaluate_gen_and_save(generator,e):
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
-    eval_dir = "evaluate_gen_%s"%time_now
+    eval_dir = "evaluate_gen"
     if not os.path.exists(eval_dir):
         os.mkdir(eval_dir)
     evaluate_img = evaluate_generator(generator)
-    plt.imsave("%s/iter_%d"%(eval_dir,e), evaluate_img)
+    plt.imsave("%s/iter_%d_%s.png"%(eval_dir,e,time_now), evaluate_img)
                           
     
     
     
     
 if __name__=="__main__":
+    print("Version 1.1, updated 320")
+    print("load the dataset")
     X_train = np.load("GAN_DS_YCrCb_km6.npy")
     '''get the shape and opt'''
 
@@ -200,15 +203,18 @@ if __name__=="__main__":
 
     opt = Adam(lr=1e-4)
     dopt = Adam(lr=1e-5)
-    nch = 160 # TUNE
+    nch = 256 # TUNE
     
     G, D, GAN = gan(nch, shp)
     print("==="*3)
     print("start training the discriminator")
     train_discriminator(G, D, X_train, epoch=3) # TUNE
-    
     # set up loss storage vector
     losses = {"d":[], "g":[]}
     print("start GAN training")
-    train_for_n(G, D, GAN, nb_epoch=2000, plt_frq=10,BATCH_SIZE=128) # TUNE
+    train_for_n(G, D, GAN, nb_epoch=10000, plt_frq=500,BATCH_SIZE=128) # TUNE
     
+    time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+    G.save("Generative_%s.h5"%time_now)
+    D.save("Discriminative_%s.h5"%time_now)
+    #plot_loss(losses,time_now)
