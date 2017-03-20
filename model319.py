@@ -165,6 +165,8 @@ def train_for_n(generator, discriminator, GAN, nb_epoch=5000, plt_frq=25,BATCH_S
             #plot_loss(losses)
             #plot_gen(generator)
             evaluate_gen_and_save(generator,e)
+            time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            generator.save("Generative_%s_%d.h5"%(time_now,e))
 
 def evaluate_generator(generator):
     noise_gen = np.random.uniform(0,1,size=[100,100])
@@ -183,7 +185,7 @@ def evaluate_gen_and_save(generator,e):
     if not os.path.exists(eval_dir):
         os.mkdir(eval_dir)
     evaluate_img = evaluate_generator(generator)
-    plt.imsave("%s/iter_%d_%s.png"%(eval_dir,e,time_now), evaluate_img)
+    plt.imsave("%s/iter_%s_%d.png"%(eval_dir,time_now,e), evaluate_img)
                           
     
     
@@ -203,7 +205,7 @@ if __name__=="__main__":
 
     opt = Adam(lr=1e-4)
     dopt = Adam(lr=1e-5)
-    nch = 256 # TUNE
+    nch = 512 # TUNE
     
     G, D, GAN = gan(nch, shp)
     print("==="*3)
@@ -212,7 +214,7 @@ if __name__=="__main__":
     # set up loss storage vector
     losses = {"d":[], "g":[]}
     print("start GAN training")
-    train_for_n(G, D, GAN, nb_epoch=10000, plt_frq=500,BATCH_SIZE=128) # TUNE
+    train_for_n(G, D, GAN, nb_epoch=150, plt_frq=50,BATCH_SIZE=128) # TUNE
     
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
     G.save("Generative_%s.h5"%time_now)
