@@ -214,7 +214,7 @@ if __name__=="__main__":
     # set up loss storage vector
     losses = {"d":[], "g":[]}
     print("start GAN training")
-    train_for_n(G, D, GAN, nb_epoch=150, plt_frq=50,BATCH_SIZE=128) # TUNE
+    train_for_n(G, D, GAN, nb_epoch=50, plt_frq=10,BATCH_SIZE=128) # TUNE
     
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
     G.save("Generative_%s.h5"%time_now)
